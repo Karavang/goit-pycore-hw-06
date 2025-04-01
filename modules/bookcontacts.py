@@ -14,7 +14,7 @@ class Name(Field):
 
     def __init__(self, value):
         super().__init__(value)
-        self.name = value[1]
+        self.name = value
 
     def getName(self):
         return self.name
@@ -25,9 +25,8 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, value):
         super().__init__(value)
-        self.phone = value[2]
         if len(self.phone) == 10 and self.phone.isdigit():
-            return self.phone
+            self.phone = value
         else:
             raise ValueError("Invalid phone")
 
@@ -39,19 +38,24 @@ class Record:
         self.name = Name(name)
         self.phones = []
 
-    def add_phone(self,phone):
-        self.phones.append(str(phone))
-    def remove_phone(self,phone):
+    def add_phone(self, phone):
+        self.phones.append(phone)
+
+    def remove_phone(self, phone):
         if phone in self.phones:
-            del self.phones[phone]
-    def edit_phone(self,phone,new_phone):
-        if phone in self.phones:
-            self.phones[phone] = new_phone
-    def find_phone(self,phone):
+            self.phones.remove(phone)
+
+    def edit_phone(self, phone, new_phone):
+        for p in self.phones:
+            if p.value == phone:
+                self.phones[phone] = Phone(new_phone)
+
+    def find_phone(self, phone):
         if phone in self.phones:
             return "this phone in phones"
         else:
             return "lib doesn`t contain this phone"
+
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
@@ -60,7 +64,7 @@ class AddressBook(UserDict):
     data = {}
 
     def add_record(self):
-        self.data(self["name"]) = Phone(self["phone"])
+        self.data[self.data.name.value] = Record(self.data.name.value)
 
     def find(self, name):
         return self.data.get(name)
