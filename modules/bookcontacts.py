@@ -61,13 +61,14 @@ class Record:
 
 
 class AddressBook(UserDict):
-    data = {}
 
-    def add_record(self):
-        self.data[self.data.name.value] = Record(self.data.name.value)
+    def add_record(self, note: Record):
+        self.data[note.name.value] = note
 
     def find(self, name):
-        return self.data.get(name)
+        if name in self.data:
+            return self.data.get(name)
+        return None
 
     def delete(self, name):
         if name in self.data:
